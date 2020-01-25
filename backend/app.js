@@ -1,16 +1,21 @@
 const express = require("express");
-const logger = require("morgan");
-const bodyParser = require("body-parser");
-
-// Set up the express app
 const app = express();
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const logger = require("morgan");
+const port = 3001;
+const insultsRouter = require("./routes/insults");
 
-// Log requests to the console.
 app.use(logger("dev"));
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.json());
+app.use("/insults", insultsRouter);
+app.listen(port, function() {
+  console.log("Running on " + port);
+});
 
-// Parse incoming requests data (https://github.com/expressjs/body-parser)
-app.use(express.json());
-
+module.exports = app;
 
 // Setup a default catch-all route that sends back a welcome message in JSON format.
 app.get("*", (req, res) =>
