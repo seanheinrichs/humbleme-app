@@ -6,11 +6,15 @@ import NavBar from '../../components/navbar/navbar.component';
 import 'react-html5-camera-photo/build/css/index.css';
 
 const HomePage = () => {
-    
+
     const _handleTakePhoto = (dataUri) => {
-        // Send this shit to the back end boi
-        console.log(dataUri);
-    }
+        fetch("http://localhost:3001/insults/list")
+        .then(response => response.json())
+        .then( responseJson => {
+            console.log(responseJson);
+            alert(responseJson.data[0].insult);
+        },
+    )}
 
     return (
         <div className='homepage'>
