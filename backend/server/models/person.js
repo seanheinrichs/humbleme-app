@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     "person",
     {
       url: DataTypes.STRING,
-      insult: DataTypes.STRING
+      insult: DataTypes.STRING,
+      image: DataTypes.BLOB
     },
     {}
   );
