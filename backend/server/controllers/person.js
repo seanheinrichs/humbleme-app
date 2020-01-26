@@ -14,8 +14,12 @@ module.exports = {
   createDirect(data) {
     return person.create({
       url: data.url,
-      insult: data.insult
-      // image: data.image
+      insult: data.insult,
+      image: data.image
     });
+  },
+  async list() {
+    people = await person.findAll({ raw: true });
+    console.log(people);
   }
 };

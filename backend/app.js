@@ -4,8 +4,8 @@ const cors = require("cors");
 const logger = require("morgan");
 const fs = require("fs");
 const path = require("path");
-const insertPerson = require("./database").createPerson;
-const listPeople = require("./database").listPeople;
+const insertPerson = require("./server/controllers/person").createDirect;
+const list = require("./server/controllers/person").list;
 
 app.use(logger("dev"));
 app.use(cors());
@@ -21,14 +21,14 @@ app.get("*", (req, res) =>
 const imagePath = path.join(__dirname, "test.jpg");
 fs.readFile(imagePath, function(err, pic) {
   const test = {
-    insult: "you dumdum",
-    url: "https://www.google.ca",
+    insult: "daaaaaamn you suck",
+    url: "whatever.com",
     image: pic
   };
 
   if (err) throw err;
-  insertPerson(test);
-  listPeople();
+  // insertPerson(test);
+  console.log(list());
 });
 
 module.exports = app;
