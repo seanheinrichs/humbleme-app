@@ -1,8 +1,8 @@
 const config = require("../config/config");
 const AWS = require("aws-sdk");
 const fs = require("fs");
-const insertPerson = require("./server/controllers/person").createDirect;
-const arr = require("./scripts/insultsFile.json");
+const insertNiceGuy = require("./server/controllers/niceguy").createDirect;
+const arr = require("./scripts/complementsFile.json");
 const http = require("http"),
   Stream = require("stream").Transform;
 
@@ -26,8 +26,20 @@ const apiFunctionWrapper = params => {
   });
 };
 
+rekognition.createCollection({CollectionId: 'complimentme'}, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+    /*
+    data = {
+     CollectionArn: "aws:rekognition:us-west-2:123456789012:collection/myphotos", 
+     StatusCode: 200
+    }
+    */
+  });
+
 for (let i = 0; i < arr.length; i++) {
-  http
+    if (arr[i].compliment.length > 255) continue;
+    http
     .request(arr[i].url, function(response) {
       let data = new Stream();
 
@@ -57,11 +69,11 @@ for (let i = 0; i < arr.length; i++) {
             data.FaceRecords[0].Face
           ) {
             console.log("INSERTION");
-            const person = {
+            const niceGuy = {
               aid: data.FaceRecords[0].Face.FaceId,
-              insult: arr[i].insult
+              compliment: arr[i].compliment
             };
-            insertPerson(person);
+            insertNiceGuy(niceGuy);
           }
         });
       });
@@ -69,28 +81,3 @@ for (let i = 0; i < arr.length; i++) {
     .end();
 }
 
-// let target = fs.readFileSync('./test1.jpg')
-
-// params = {
-//     CollectionId: "humbleme",
-//     FaceMatchThreshold: 95,
-//     Image: {
-//      Bytes: target
-//     },
-//     MaxFaces: 5
-//    };
-//    rekognition.searchFacesByImage(params, function(err, data) {
-//      if (err) console.log(err, err.stack); // an error occurred
-//      else     console.log(data.FaceMatches[0].Face.FaceId);  });
-
-// const generateParams = (source, target) => {
-//     return {
-//         SimilarityThreshold: 0,
-//         SourceImage: {
-//             Bytes: source
-//         },
-//         TargetImage: {
-//             Bytes: target
-//         }
-//     }
-// }
