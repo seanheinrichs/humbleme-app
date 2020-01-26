@@ -4,6 +4,7 @@ const cors = require("cors");
 const logger = require("morgan");
 const apiFunctionWrapper = require('./face_comparison')
 const fetchInsult = require("./server/controllers/person").fetchInsult;
+const fs = require("fs");
 
 app.use(logger("dev"));
 app.use(cors());
@@ -14,8 +15,16 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 app.use(express.json());
 app.post("/photo", (req, res) => {
-  const b64string = req.body.photo;
-  const buf = Buffer.from(b64string, 'base64');
+  let base64Image = req.body.photo.split(';base64,').pop();
+  fs.writeFileSync('image.png', base64Image, {encoding: 'base64'}, function(err) {
+    console.log('File created');
+  });
+
+  let buf = fs.readFileSync('image.png');
+  fs.unlink('image.png', (err) => {
+      if (err)
+        throw err;
+  });
   let params = {
     CollectionId: "humbleme", 
     FaceMatchThreshold: 10, 
@@ -24,20 +33,27 @@ app.post("/photo", (req, res) => {
     }, 
     MaxFaces: 5
    };
-  apiFunctionWrapper(params, (err, data) => {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data.FaceMatches[0].Face.FaceId, data.FaceMatches[0].Face);  }); 
-  try {
-    res.status(200).send({
-      message: "Roast Goes Here!"
-    });
-  } catch (err) {
-    res.status(400).json({
-      message: "An error occured, please try again.",
-      err
-    });
-  }
-});
+  apiFunctionWrapper(params).then( (data, err) => {
+    if (err) console.log('ERROR: ', err, err.stack); // an error occurred
+    else    {
+      console.log(data)
+      fetchInsult(data.FaceMatches[0].Face.FaceId).then(insult => {
+      console.log(insult)
+      try {
+      res.status(200).send({
+        message: insult
+      });
+    } catch (err) {
+      res.status(400).json({
+        message: "An error occured, please try again.",
+        err
+      });
+    }}) 
+    }
+   }
+    ); 
+  
+})
 
 // Setup a default catch-all route that sends back a welcome message in JSON format.
 app.get("/", (req, res) =>

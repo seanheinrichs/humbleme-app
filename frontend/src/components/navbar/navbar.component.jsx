@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NavBar = () => {
+const NavBar = ({onToggle}) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -52,7 +52,7 @@ const NavBar = () => {
         <div className={classes.root}>
         <AppBar position="static" style={{ background: appColor }}>
           <Toolbar>
-            <Switch onChange={() => { setChecked(!checked); changeVersion(checked); } } />
+            <Switch onChange={() => {onToggle() ; setChecked(!checked); changeVersion(checked); } } />
             <Typography variant="h6" className={classes.title}>
                 Get <b>{appVersion}!</b>
             </Typography>

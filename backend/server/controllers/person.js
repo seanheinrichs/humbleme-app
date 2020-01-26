@@ -10,7 +10,7 @@ module.exports = {
       .then(person => res.status(201).send(person))
       .catch(error => res.status(400).send(error));
   },
-  createDirect(data) {
+  async createDirect(data) {
     return person.create({
       aid: data.aid,
       insult: data.insult

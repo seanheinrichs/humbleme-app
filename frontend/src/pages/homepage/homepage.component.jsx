@@ -1,37 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Camera from 'react-html5-camera-photo';
 import Typography from '@material-ui/core/Typography';
 import NavBar from '../../components/navbar/navbar.component';
-import { createMuiTheme } from '@material-ui/core/styles';
+import logo from '../../humble-logo.png';
 
 import 'react-html5-camera-photo/build/css/index.css';
-import 'typeface-patrick-hand';
 
 const HomePage = () => {
+    
+    const [message, setMessage] = useState('Take a photo!');
+    const [isToast, setIsToast] = useState(true);
+
+    const toggleRoast = () => setIsToast(!isToast)
 
     const _handleTakePhoto = (dataUri) => {
         fetch('http://localhost:3001/photo', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                photo: dataUri
+                photo: dataUri,
+                isToast: isToast
             })
         })
         .then(response => response.json())
-        .then( responseJson => {
-            alert(responseJson.message);
+        .then(responseJson => {
+            setMessage(responseJson.message);
         },
     )}
 
     return (
-        <div className='homepage'>
-            <Typography variant="h3">Humble Me</Typography>
-            <NavBar />
-            <Camera 
-                onTakePhoto= { (dataUri) => { _handleTakePhoto(dataUri); } }
-            />
+        <>
+        <img src={logo} alt="Logo" />
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+            <div className='homepage'>
+                <NavBar onToggle={toggleRoast} />
+                <Camera 
+                    onTakePhoto= { (dataUri) => { _handleTakePhoto(dataUri); } }
+                />
+            </div>
         </div>
+            <Typography variant="h4" >{message}</Typography>
+        </>
     );
 };
 
