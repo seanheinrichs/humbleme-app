@@ -16,8 +16,8 @@ module.exports = {
       insult: data.insult
     });
   },
-  async list() {
-    people = await person.findAll({ raw: true });
-    console.log(people);
+  async fetchInsult(aid) {
+    rawPerson = await person.findAll({ raw: true, where: { aid: aid } });
+    if (rawPerson.length) return rawPerson[0].insult;
   }
 };
