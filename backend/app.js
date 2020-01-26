@@ -2,20 +2,31 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const logger = require("morgan");
-const fs = require("fs");
-const path = require("path");
-const insertPerson = require("./server/controllers/person").createDirect;
+const apiFunctionWrapper = require('./face_comparison')
 const fetchInsult = require("./server/controllers/person").fetchInsult;
 
 app.use(logger("dev"));
 app.use(cors());
 
-var bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 app.use(express.json());
 app.post("/photo", (req, res) => {
+  const b64string = req.body.photo;
+  const buf = Buffer.from(b64string, 'base64');
+  let params = {
+    CollectionId: "humbleme", 
+    FaceMatchThreshold: 10, 
+    Image: {
+        Bytes: buf
+    }, 
+    MaxFaces: 5
+   };
+  apiFunctionWrapper(params, (err, data) => {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data.FaceMatches[0].Face.FaceId, data.FaceMatches[0].Face);  }); 
   try {
     res.status(200).send({
       message: "Roast Goes Here!"
@@ -35,10 +46,7 @@ app.get("/", (req, res) =>
   })
 );
 
-const test = {
-  insult: "daaaaaamn you suck",
-  aid: "123"
-};
+
 
 // insertPerson(test);
 fetchInsult("481806c0-1e6f-41ab-958f-d72055ba39df").then(insult =>
