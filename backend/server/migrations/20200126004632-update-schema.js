@@ -2,9 +2,9 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.removeColumn("person", "url"),
-      queryInterface.removeColumn("person", "image"),
-      queryInterface.addColumn("person", "aid")
+      queryInterface.removeColumn("people", "url"),
+      queryInterface.removeColumn("people", "image"),
+      queryInterface.addColumn("people", "aid", Sequelize.STRING)
     ]);
   }
 };
