@@ -1,5 +1,7 @@
 const person = require("./person");
+const niceguy = require("./niceguy");
 
 module.exports = {
-  person
+  person,
+  niceguy
 };
