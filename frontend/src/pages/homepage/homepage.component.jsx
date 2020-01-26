@@ -11,11 +11,16 @@ import 'typeface-patrick-hand';
 const HomePage = () => {
 
     const _handleTakePhoto = (dataUri) => {
-        console.log(dataUri);
-        fetch('http://localhost:3001/insults/list')
+        fetch('http://localhost:3001/photo', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                photo: dataUri
+            })
+        })
         .then(response => response.json())
         .then( responseJson => {
-            alert(responseJson.data[0].insult);
+            alert(responseJson.message);
         },
     )}
 
