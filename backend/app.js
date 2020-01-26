@@ -18,17 +18,12 @@ app.get("*", (req, res) =>
   })
 );
 
-const imagePath = path.join(__dirname, "test.jpg");
-fs.readFile(imagePath, function(err, pic) {
-  const test = {
-    insult: "daaaaaamn you suck",
-    url: "whatever.com",
-    image: pic
-  };
+const test = {
+  insult: "daaaaaamn you suck",
+  aid: "123"
+};
 
-  if (err) throw err;
-  // insertPerson(test);
-  console.log(list());
-});
+// insertPerson(test);
+console.log(list());
 
 module.exports = app;

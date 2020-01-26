@@ -4,18 +4,16 @@ module.exports = {
   create(req, res) {
     return person
       .create({
-        url: req.body.url,
-        insult: req.body.insult,
-        image: req.body.image
+        aid: req.body.aid,
+        insult: req.body.insult
       })
       .then(person => res.status(201).send(person))
       .catch(error => res.status(400).send(error));
   },
   createDirect(data) {
     return person.create({
-      url: data.url,
-      insult: data.insult,
-      image: data.image
+      aid: data.aid,
+      insult: data.insult
     });
   },
   async list() {
