@@ -15,17 +15,23 @@ AWS.config.update(
 
 const rekognition = new AWS.Rekognition({apiVersion: 'latest'});
 
-const generateParams = (source, target) => {
-    return {
-        SimilarityThreshold: 0,
-        SourceImage: {
-            Bytes: source
-        },
-        TargetImage: {
-            Bytes: target
-        }
-    }
-} 
+
+
+// let target = fs.readFileSync('./test1.jpg')
+
+// params = {
+//     CollectionId: "humbleme", 
+//     FaceMatchThreshold: 95, 
+//     Image: {
+//      Bytes: target
+//     }, 
+//     MaxFaces: 5
+//    };
+//    rekognition.searchFacesByImage(params, function(err, data) {
+//      if (err) console.log(err, err.stack); // an error occurred
+//      else     console.log(data.FaceMatches[0].Face.FaceId);  }); 
+
+
 
 function apiFunctionWrapper(params) {
     return new Promise((resolve, reject) => {
@@ -39,30 +45,5 @@ function apiFunctionWrapper(params) {
     });
 }
 
-const getSimilarityRate = async (source, arr) => {
-    let max = 0;
-    let maxid;
-    for(let i = 0; i<arr.length; i++) {
-        let params = generateParams(source, arr[i].image);
-        await apiFunctionWrapper(params).then( 
-            (data) => {
-                console.log(data.FaceMatches[0].Similarity, 'inside')
-                if (data.FaceMatches[0].Similarity > max){
-                    max = data.FaceMatches[0].Similarity;
-                    maxid = i;
-                    console.log(max, 'max')
-                } 
-            }
-        );
-    }
-    return maxid;
-}
-let source = fs.readFileSync('./test.jpg')
-let target = fs.readFileSync('./test1.jpg')
-let arr = [{
-    image: target
-}]
 
-let now = Date.now()
-getSimilarityRate(source, arr).then((data) => console.log(data, (Date.now()-now)/1000))
 
