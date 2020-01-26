@@ -19,5 +19,6 @@ module.exports = {
   async fetchInsult(aid) {
     rawPerson = await person.findAll({ raw: true, where: { aid: aid } });
     if (rawPerson.length) return rawPerson[0].insult;
+    else return 'You\'re ugly. BOOM, ROASTED!'
   }
 };

@@ -19,5 +19,6 @@ module.exports = {
   async fetchCompliment(aid) {
     rawNiceGuy = await niceguy.findAll({ raw: true, where: { aid: aid } });
     if (rawNiceGuy.length) return rawNiceGuy[0].compliment;
+    else return 'I love you like kanye loves kanye'
   }
 };

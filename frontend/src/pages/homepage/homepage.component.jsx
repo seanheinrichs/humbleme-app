@@ -10,9 +10,9 @@ import 'react-html5-camera-photo/build/css/index.css';
 const HomePage = () => {
     
     const [message, setMessage] = useState('Take a photo!');
-    const [isToast, setIsToast] = useState(true);
+    const [isRoast, setIsRoast] = useState(false);
 
-    const toggleRoast = () => setIsToast(!isToast)
+    const toggleRoast = () => setIsRoast(!isRoast)
 
     const _handleTakePhoto = (dataUri) => {
         fetch('http://localhost:3001/photo', {
@@ -20,7 +20,7 @@ const HomePage = () => {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 photo: dataUri,
-                isToast: isToast
+                isRoast: isRoast
             })
         })
         .then(response => response.json())

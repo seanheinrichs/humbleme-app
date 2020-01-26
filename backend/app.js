@@ -4,6 +4,7 @@ const cors = require("cors");
 const logger = require("morgan");
 const apiFunctionWrapper = require('./face_comparison')
 const fetchInsult = require("./server/controllers/person").fetchInsult;
+const fetchCompliment = require("./server/controllers/niceguy").fetchCompliment;
 const fs = require("fs");
 
 app.use(logger("dev"));
@@ -26,22 +27,37 @@ app.post("/photo", (req, res) => {
         throw err;
   });
   let params = {
-    CollectionId: "humbleme", 
+    CollectionId: req.body.isRoast ? "humbleme" : "complimentme", 
     FaceMatchThreshold: 10, 
     Image: {
         Bytes: buf
     }, 
     MaxFaces: 5
    };
+   console.log(params)
   apiFunctionWrapper(params).then( (data, err) => {
     if (err) console.log('ERROR: ', err, err.stack); // an error occurred
     else    {
-      console.log(data)
-      fetchInsult(data.FaceMatches[0].Face.FaceId).then(insult => {
-      console.log(insult)
+      if (req.body.isRoast) {
+        fetchInsult(data.FaceMatches[0].Face.FaceId).then(insult => {
+        console.log(insult)
+        try {
+        res.status(200).send({
+          message: insult
+        });
+      } catch (err) {
+        res.status(400).json({
+          message: "An error occured, please try again.",
+          err
+        });
+      }}) 
+  }
+  else {
+    fetchCompliment(data.FaceMatches[0].Face.FaceId).then(compliment => {
+      console.log(compliment)
       try {
       res.status(200).send({
-        message: insult
+        message: compliment
       });
     } catch (err) {
       res.status(400).json({
@@ -49,6 +65,7 @@ app.post("/photo", (req, res) => {
         err
       });
     }}) 
+  }
     }
    }
     ); 
