@@ -1,2 +1,2 @@
 # humbleme-app
-A webapp that lets you compliment or insult your friends.
+A web application that uses face recognition technology to compliment or insult your friends. Created during ConuHacks V.
